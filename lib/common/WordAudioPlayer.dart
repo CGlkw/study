@@ -48,7 +48,7 @@ class WordAudioPlayer extends StatelessWidget{
             size: size,
             color: color,
           ),
-          child
+          child??Container()
         ],
       )
     ):Container();

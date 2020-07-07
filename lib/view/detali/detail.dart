@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:study/api/YouDaoApi.dart';
 import 'package:study/common/VolumeAnimation.dart';
 import 'package:study/common/WordAudioPlayer.dart';
+import 'package:study/config.dart';
 
+import 'ClassicExample.dart';
 import 'DetailCart.dart';
 
 // ignore: must_be_immutable
@@ -43,7 +45,7 @@ class _WordDetail extends State<WordDetail> {
     return detail!=null?Scaffold(
       body: Container(
         decoration: BoxDecoration(
-          color: Colors.black12
+          color: ColorConfig.background_color_grey
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -51,7 +53,7 @@ class _WordDetail extends State<WordDetail> {
           children: [
             Container(
               decoration: BoxDecoration(
-                color: Colors.white
+                color: ColorConfig.background_color_base
               ),
               padding: EdgeInsets.all(10),
               child: Column(
@@ -61,7 +63,7 @@ class _WordDetail extends State<WordDetail> {
                       Text(widget.word,
                         style: TextStyle(
                             fontSize: 40,
-                            color: Colors.black,
+                            color: ColorConfig.primary_text,
                             fontWeight: FontWeight.bold
                         ),
                       ),
@@ -72,12 +74,20 @@ class _WordDetail extends State<WordDetail> {
                       WordAudioPlayer(
                         "https://dict.youdao.com/dictvoice?audio="+detail["simple"]["word"][0]["ukspeech"],
                         color: Theme.of(context).primaryColor,
-                        child: Text(" 英 /${detail["simple"]["word"][0]["ukphone"]??''}/"),
+                        child: Text(" 英 /${detail["simple"]["word"][0]["ukphone"]??''}/",
+                          style: TextStyle(
+                            color: ColorConfig.primary_text
+                          ),
+                        ),
                       ),
                       WordAudioPlayer(
                         "https://dict.youdao.com/dictvoice?audio="+detail["simple"]["word"][0]["usspeech"],
                         color: Theme.of(context).primaryColor,
-                        child: Text(" 美 /${detail["simple"]["word"][0]["usphone"]??''}/"),
+                        child: Text(" 美 /${detail["simple"]["word"][0]["usphone"]??''}/",
+                          style: TextStyle(
+                              color: ColorConfig.primary_text
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -85,8 +95,11 @@ class _WordDetail extends State<WordDetail> {
               ),
             ),
             ListView(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
               children: [
                 DetailCard(detail["ec"]),
+                ClassicExample(detail),
               ],
             )
           ],

@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:study/config.dart';
 
 class DetailCard extends StatelessWidget{
 
@@ -13,7 +14,7 @@ class DetailCard extends StatelessWidget{
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white
+        color: ColorConfig.background_color_base,
       ),
       padding: EdgeInsets.all(10),
       margin: EdgeInsets.only(top: 10),
@@ -57,7 +58,7 @@ class DetailCard extends StatelessWidget{
                 TextSpan(
                   text: "[网络]",
                   style: TextStyle(
-                    color: Colors.grey,
+                    color:  ColorConfig.secondary_text
                   )
                 ),
                 TextSpan(
@@ -65,6 +66,9 @@ class DetailCard extends StatelessWidget{
                 ),
                 TextSpan(
                   text: data["web_trans"].join('；'),
+                  style:TextStyle(
+                      color:  ColorConfig.regular_text
+                  )
                 )
               ]
             ),
@@ -79,7 +83,7 @@ class DetailCard extends StatelessWidget{
                 TextSpan(
                   text: data["exam_type"].join('；'),
                   style: TextStyle(
-                    color: Colors.grey
+                    color: ColorConfig.placeholder_text
                   )
                 )
               ]

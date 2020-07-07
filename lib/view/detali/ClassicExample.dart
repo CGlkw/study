@@ -1,5 +1,10 @@
 
 import 'package:flutter/material.dart';
+import 'package:study/common/WordAudioPlayer.dart';
+import 'package:study/config.dart';
+import 'package:study/utils/ParsePLabel.dart';
+import 'package:study/view/detali/common/AuthSentsPart.dart';
+import 'package:study/view/detali/common/BlngSentsPart.dart';
 
 class ClassicExample extends StatelessWidget{
 
@@ -19,57 +24,31 @@ class ClassicExample extends StatelessWidget{
       return Container();
     }
     return Container(
+      margin: EdgeInsets.only(top: 10),
+      padding: EdgeInsets.only(left: 10),
+      decoration: BoxDecoration(
+        color: ColorConfig.background_color_base
+      ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
+            padding: EdgeInsets.only(top: 10,bottom: 10),
             child:Text("经典例句",
               style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.white70
+                  fontSize: 10,
+                  color: ColorConfig.placeholder_text
               ),
             ),
           ),
           Container(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-
-              ],
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-}
-
-
-class _BlngSentsPart extends StatelessWidget{
-
-  var data;
-
-
-  _BlngSentsPart(this.data);
-
-  @override
-  Widget build(BuildContext context) {
-    return data == null ?Container() : Container(
-      child: Column(
-        children: [
-          Container(
-            child: Text("双语",
-              style: TextStyle(
-                color: Colors.grey,
-                fontSize: 25
-              ),
-            ),
-          ),
-          Container(
-            child: Row(
-              children: [
-                Column(
-
-                )
+                blng_sents_part != null ? BlngSentsPart(blng_sents_part):Container(),
+                auth_sents_part != null ? AuthSentsPart(auth_sents_part):Container(),
               ],
             ),
           )
