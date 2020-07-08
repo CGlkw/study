@@ -12,6 +12,15 @@ class ColorConfig{
 
   static const Color background_color_base = Color(0xFFF5F7FA);
 
+  static const Color background_color_white = Color(0xFFFFFFFF);
+
+
   static const Color background_color_grey = Color(0xFFD5D7DA);
 
+  static const Color link = Color(0xFF409EFF);
+
+}
+
+class FontSizeConfig{
+  static const int min = 10;
 }

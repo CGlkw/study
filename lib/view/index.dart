@@ -17,7 +17,15 @@ class _IndexState extends State<Index>{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('SearchBarDemo'),
+        title: TextField(
+          onTap: (){
+            showSearch(context: context,delegate: SearchPage());
+          },
+          decoration: InputDecoration(
+            hintText: '翻译',
+            border: InputBorder.none,
+          ),
+        ),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.search),
@@ -27,6 +35,7 @@ class _IndexState extends State<Index>{
           )
         ],
       ),
+      drawer: Container(),
       body: Container(
         child: InkWell(
           onTap: (){

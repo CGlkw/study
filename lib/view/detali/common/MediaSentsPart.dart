@@ -3,15 +3,15 @@ import 'package:study/common/WordAudioPlayer.dart';
 import 'package:study/config.dart';
 import 'package:study/utils/ParsePLabel.dart';
 
-class BlngSentsPart extends StatefulWidget {
+class MediaSentsPart extends StatefulWidget {
   var data;
 
-  BlngSentsPart(this.data);
+  MediaSentsPart(this.data);
   @override
-  State<StatefulWidget> createState() =>_BlngSentsPartState();
+  State<StatefulWidget> createState() =>_MediaSentsPartState();
 }
 
-class _BlngSentsPartState extends State<BlngSentsPart>{
+class _MediaSentsPartState extends State<MediaSentsPart>{
 
 
   @override
@@ -19,13 +19,13 @@ class _BlngSentsPartState extends State<BlngSentsPart>{
     if(widget.data == null){
       return Container();
     }
-    List sentence_pair =  widget.data["sentence-pair"] as List;
+    List sent =  widget.data["sent"] as List;
 
 
     List<Widget> _buildMore(){
       List<Widget> result = [];
-      for(int i = 1;i< sentence_pair.length;i++){
-        result.add(_buildItem(sentence_pair[i],EdgeInsets.only(left: 20,right: 55),),);
+      for(int i = 1;i< sent.length;i++){
+        result.add(_buildItem(sent[i],EdgeInsets.only(left: 20,right: 55),),);
       }
       return result;
     }
@@ -38,7 +38,7 @@ class _BlngSentsPartState extends State<BlngSentsPart>{
         children: [
           Container(
             padding: EdgeInsets.only(top: 5,bottom: 3),
-            child: Text("双语",
+            child: Text("原声",
               style: TextStyle(
                   color: ColorConfig.secondary_text,
                   fontSize: 12
@@ -46,7 +46,7 @@ class _BlngSentsPartState extends State<BlngSentsPart>{
             ),
           ),
           ExpansionTile(
-            title: _buildItem(sentence_pair[0],EdgeInsets.only(left: 0,right: 0),),
+            title: _buildItem(sent[0],EdgeInsets.only(left: 0,right: 0),),
             children: _buildMore(),
           ),
         ],
@@ -55,6 +55,7 @@ class _BlngSentsPartState extends State<BlngSentsPart>{
   }
 
   Widget _buildItem(data,EdgeInsetsGeometry padding){
+    var source =  data["snippets"]["snippet"][0];
     return Container(
       padding:padding,
       child: Row(
@@ -66,7 +67,7 @@ class _BlngSentsPartState extends State<BlngSentsPart>{
                 children:[
                   Container(
                     padding: EdgeInsets.only(right: 5),
-                    child:ParsePLabel(
+                    child: ParsePLabel(
                         textStyle:TextStyle(
                             color: ColorConfig.primary_text,
                             fontSize: 14,
@@ -77,19 +78,11 @@ class _BlngSentsPartState extends State<BlngSentsPart>{
                             fontSize: 14,
                             height: 1.5
                         )
-                    ).parse(data["sentence-eng"]),
+                    ).parse((data["eng"] as String).replaceAll("<br>", "")),
                   ),
+
                   Text(
-                    data["sentence-translation"],
-                    style: TextStyle(
-                        color: ColorConfig.primary_text,
-                        fontSize: 14,
-                        height: 1.5,
-                        fontWeight: FontWeight.bold
-                    ),
-                  ),
-                  data["source"]==null?Container():Text(
-                    data["source"],
+                    '${source["source"]}:${source["name"]}',
                     style: TextStyle(
                         color: ColorConfig.placeholder_text,
                         fontSize: 10,
@@ -100,7 +93,7 @@ class _BlngSentsPartState extends State<BlngSentsPart>{
             ),
           ),
           WordAudioPlayer(
-            "https://dict.youdao.com/dictvoice?audio="+data["sentence-speech"],
+            source["streamUrl"],
             color: Theme.of(context).primaryColor,
           ),
         ],

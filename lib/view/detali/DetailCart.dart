@@ -14,7 +14,7 @@ class DetailCard extends StatelessWidget{
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: ColorConfig.background_color_base,
+        color: ColorConfig.background_color_white,
       ),
       padding: EdgeInsets.all(10),
       margin: EdgeInsets.only(top: 10),
@@ -52,7 +52,8 @@ class DetailCard extends StatelessWidget{
             text: TextSpan(
               style: TextStyle(
                   height: 2,
-                  letterSpacing: 1.2
+                  letterSpacing: 1.2,
+                  fontSize: 14
               ),
               children: [
                 TextSpan(
@@ -64,7 +65,7 @@ class DetailCard extends StatelessWidget{
                 TextSpan(
                   text: "\t"
                 ),
-                TextSpan(
+                data["web_trans"] == null ? Container():TextSpan(
                   text: data["web_trans"].join('；'),
                   style:TextStyle(
                       color:  ColorConfig.regular_text
@@ -73,11 +74,12 @@ class DetailCard extends StatelessWidget{
               ]
             ),
           ),
-          RichText(
+          data["exam_type"] == null?Container():RichText(
             text: TextSpan(
               style: TextStyle(
                   height: 2,
-                  letterSpacing: 1.2
+                  letterSpacing: 1.2,
+                  fontSize: 14
               ),
               children: [
                 TextSpan(

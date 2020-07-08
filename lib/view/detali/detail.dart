@@ -5,9 +5,15 @@ import 'package:study/api/YouDaoApi.dart';
 import 'package:study/common/VolumeAnimation.dart';
 import 'package:study/common/WordAudioPlayer.dart';
 import 'package:study/config.dart';
+import 'package:study/view/detali/Etym.dart';
+import 'package:study/view/detali/Phrs.dart';
+import 'package:study/view/detali/Syno.dart';
+import 'package:study/view/detali/WebTrans.dart';
+import 'package:study/view/detali/WikipediaDigest.dart';
 
 import 'ClassicExample.dart';
 import 'DetailCart.dart';
+import 'EE.dart';
 
 // ignore: must_be_immutable
 class WordDetail extends StatefulWidget{
@@ -45,7 +51,7 @@ class _WordDetail extends State<WordDetail> {
     return detail!=null?Scaffold(
       body: Container(
         decoration: BoxDecoration(
-          color: ColorConfig.background_color_grey
+          color: ColorConfig.background_color_base
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -53,7 +59,7 @@ class _WordDetail extends State<WordDetail> {
           children: [
             Container(
               decoration: BoxDecoration(
-                color: ColorConfig.background_color_base
+                color: ColorConfig.background_color_white,
               ),
               padding: EdgeInsets.all(10),
               child: Column(
@@ -94,14 +100,25 @@ class _WordDetail extends State<WordDetail> {
                 ],
               ),
             ),
-            ListView(
-              physics: NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              children: [
-                DetailCard(detail["ec"]),
-                ClassicExample(detail),
-              ],
-            )
+            Expanded(
+              child: Container(
+
+                child:SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      DetailCard(detail["ec"]),
+                      ClassicExample(detail),
+                      WebTrans(detail["web_trans"]),
+                      EE(detail["ee"]),
+                      Syno(detail["syno"]),
+                      Phrs(detail["phrs"]),
+                      Etym(detail["etym"]),
+                      WikipediaDigest(detail["wikipedia_digest"]??detail["baike"]),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),

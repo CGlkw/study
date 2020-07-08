@@ -38,11 +38,11 @@ class _AuthSentsPartState extends State<AuthSentsPart>{
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
-            padding: EdgeInsets.only(top: 5,bottom: 10),
+            padding: EdgeInsets.only(top: 5,bottom: 3),
             child: Text("权威",
               style: TextStyle(
                   color: ColorConfig.secondary_text,
-                  fontSize: 10
+                  fontSize: 12
               ),
             ),
           ),
@@ -65,15 +65,16 @@ class _AuthSentsPartState extends State<AuthSentsPart>{
                 mainAxisAlignment: MainAxisAlignment.start,
                 children:[
                   Container(
+                    padding: EdgeInsets.only(right: 5),
                     child: ParsePLabel(
                         textStyle:TextStyle(
                             color: ColorConfig.primary_text,
-                            fontSize: 12,
+                            fontSize: 14,
                             height: 1.5
                         ),
                         pTextStyle:TextStyle(
                             color: Theme.of(context).primaryColor,
-                            fontSize: 12,
+                            fontSize: 14,
                             height: 1.5
                         )
                     ).parse(data["foreign"]),
@@ -83,7 +84,7 @@ class _AuthSentsPartState extends State<AuthSentsPart>{
                     (data["source"] as String ).replaceAll("<i>", "").replaceAll("</i>", ""),
                     style: TextStyle(
                         color: ColorConfig.placeholder_text,
-                        fontSize: 8,
+                        fontSize: 10,
                         height: 1.5
                     ),
                   ),
