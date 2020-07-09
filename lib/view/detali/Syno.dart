@@ -34,6 +34,7 @@ class Syno extends StatelessWidget{
                 color: ColorConfig.link
             ),
             recognizer: TapGestureRecognizer()..onTap = (){
+              print("data[i]:${data[i]}");
               Navigator.pushNamed(context, "/word/detail", arguments: data[i]);
             }
         ),

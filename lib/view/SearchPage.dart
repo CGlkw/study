@@ -1,19 +1,11 @@
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:study/api/YouDaoApi.dart';
+import 'package:study/config.dart';
+import 'package:study/utils/SpUtils.dart';
 import 'package:study/view/detali/detail.dart';
-
-const searchList = [
-  'jiejie-大长腿',
-  'jiejie-水蛇腰',
-  'gege-帅气欧巴',
-  'gege-小鲜肉'
-];
-
-const recentSuggest = [
-  '推荐-1',
-  '推荐-2',
-];
 
 class SearchPage extends SearchDelegate<String>{
 
@@ -22,6 +14,12 @@ class SearchPage extends SearchDelegate<String>{
   String word = "";
   Widget resultWidget;
   var detail;
+  Widget _oldWidget = Container();
+
+  SearchPage(){
+    _buildHistroy().then((value) => _oldWidget = value);
+  }
+
   @override
   List<Widget> buildActions(BuildContext context) {
     return [
@@ -85,7 +83,6 @@ class SearchPage extends SearchDelegate<String>{
     );
   }
 
-  Widget _oldWidget =  Container(child: Text("没有数据！"),);
   Widget _buildResult(data){
     if(data == null || data.length == 0){
       return _oldWidget;
@@ -103,6 +100,9 @@ class SearchPage extends SearchDelegate<String>{
         title: InkWell(
           onTap: () async {
             query = data[index]["entry"];
+            //保存历史
+            _saveHistroy(data[index]);
+            buildResults(context);
           },
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,12 +111,12 @@ class SearchPage extends SearchDelegate<String>{
               RichText( //富文本
                 text: TextSpan(
                   text: data[index]["entry"],
-                  style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),
+                  style: TextStyle(color: ColorConfig.primary_text,fontWeight: FontWeight.bold),
                 ),
               ),
               Text(data[index]["explain"],
                 style: TextStyle(
-                    color: Colors.grey,
+                    color: ColorConfig.secondary_text,
                     height: 1.3,
                     letterSpacing: 1.1
                 ),
@@ -129,6 +129,59 @@ class SearchPage extends SearchDelegate<String>{
     return _oldWidget;
   }
 
+   Future<Widget> _buildHistroy() async {
+    String s = await SpUtils.getStr("searchHistroy");
+    List data = json.decode(s) as List;
+
+    return ListView.separated(
+      itemCount:data.length,
+      separatorBuilder: (buildContext, index) {
+        return Divider(
+          height: 0.5,
+          color: Colors.grey,
+        );
+      },
+      padding: EdgeInsets.all(8.0),
+      itemBuilder: (context,index) => ListTile(
+          title: InkWell(
+            onTap: () async {
+              query = data[index]["entry"];
+              buildResults(context);
+            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                RichText( //富文本
+                  text: TextSpan(
+                    text: data[index]["entry"],
+                    style: TextStyle(color: ColorConfig.primary_text,fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Text(data[index]["explain"],
+                  style: TextStyle(
+                      color: ColorConfig.secondary_text,
+                      height: 1.3,
+                      letterSpacing: 1.1
+                  ),
+                ),
+              ],
+            ),
+          )
+      ),
+    );
+  }
+
+
+  _saveHistroy(String j) async {
+    String s = await SpUtils.getStr("searchHistroy");
+    List list = json.decode(s) as List;
+    if(list.length > 15){
+      list.removeLast();
+    }
+    list.insert(0, j);
+    SpUtils.setStr("searchHistroy", json.encode(list));
+  }
 
   Future<List> _searchDate() async {
     if(query == null || query == ""){

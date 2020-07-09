@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:study/view/detali/detail.dart';
+import 'package:study/view/detali/index.dart';
 import 'package:study/view/index.dart';
 
 
@@ -9,7 +9,7 @@ class Routes{
   Map<String, WidgetBuilder> init(){
     return {
       '/' : (c) => Index(),
-      '/word/detail':(c) => WordDetail(argsFromContext(c)),
+      '/word/detail':(c) => DetailIndex(argsFromContext(c)),
     };
   }
 

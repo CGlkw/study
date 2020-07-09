@@ -7,11 +7,14 @@ class DetailCard extends StatelessWidget{
   final Map data;
   var wordTrs;
 
-  DetailCard(this.data)
-      :wordTrs = data["word"]["trs"];
+  DetailCard(this.data);
 
   @override
   Widget build(BuildContext context) {
+    if(data == null){
+      return Container();
+    }
+    wordTrs = data["word"]["trs"];
     return Container(
       decoration: BoxDecoration(
         color: ColorConfig.background_color_white,
@@ -65,7 +68,7 @@ class DetailCard extends StatelessWidget{
                 TextSpan(
                   text: "\t"
                 ),
-                data["web_trans"] == null ? Container():TextSpan(
+                data["web_trans"] == null ? TextSpan():TextSpan(
                   text: data["web_trans"].join('；'),
                   style:TextStyle(
                       color:  ColorConfig.regular_text

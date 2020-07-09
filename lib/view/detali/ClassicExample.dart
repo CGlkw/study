@@ -15,13 +15,16 @@ class ClassicExample extends StatelessWidget{
   var blng_sents_part;
   var auth_sents_part;
   var media_sents_part;
-  ClassicExample(this.data)
-      :blng_sents_part = data["blng_sents_part"],
-        auth_sents_part = data["auth_sents_part"],
-        media_sents_part = data["media_sents_part"];
+  ClassicExample(this.data);
 
   @override
   Widget build(BuildContext context) {
+    if(data == null){
+      return Container();
+    }
+    blng_sents_part = data["blng_sents_part"];
+    auth_sents_part = data["auth_sents_part"];
+    media_sents_part = data["media_sents_part"];
     if(blng_sents_part ==null && auth_sents_part==null &&media_sents_part==null){
       return Container();
     }
