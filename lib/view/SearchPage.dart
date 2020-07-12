@@ -102,7 +102,7 @@ class SearchPage extends SearchDelegate<String>{
             query = data[index]["entry"];
             //保存历史
             _saveHistroy(data[index]);
-            buildResults(context);
+            showResults(context);
           },
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -131,8 +131,13 @@ class SearchPage extends SearchDelegate<String>{
 
    Future<Widget> _buildHistroy() async {
     String s = await SpUtils.getStr("searchHistroy");
+    if(s == null ){
+      return Container();
+    }
     List data = json.decode(s) as List;
-
+    if(data == null || data.length < 0){
+      return Container();
+    }
     return ListView.separated(
       itemCount:data.length,
       separatorBuilder: (buildContext, index) {
@@ -146,7 +151,7 @@ class SearchPage extends SearchDelegate<String>{
           title: InkWell(
             onTap: () async {
               query = data[index]["entry"];
-              buildResults(context);
+              showResults(context);
             },
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -173,9 +178,14 @@ class SearchPage extends SearchDelegate<String>{
   }
 
 
-  _saveHistroy(String j) async {
+  _saveHistroy(Map j) async {
     String s = await SpUtils.getStr("searchHistroy");
-    List list = json.decode(s) as List;
+    List list ;
+    if(s == null){
+      list = [];
+    }else {
+      list = json.decode(s) as List;
+    }
     if(list.length > 15){
       list.removeLast();
     }

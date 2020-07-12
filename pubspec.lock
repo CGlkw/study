@@ -203,6 +203,15 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
+  smooth_page_indicator:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: ca83540a58a6bc8a40bb6bf0f93e212cc7f71ed5
+      url: "https://github.com/Milad-Akarie/smooth_page_indicator.git"
+    source: git
+    version: "0.1.5"
   source_span:
     dependency: transitive
     description:

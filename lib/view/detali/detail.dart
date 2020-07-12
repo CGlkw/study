@@ -36,8 +36,8 @@ class _WordDetail extends State<WordDetail> {
 
   Map detail;
   bool b = false;
-  bool isExits = true;
-
+  bool isExits = false;
+  double opacityLevel = 0;
   @override
   void initState() {
     // TODO: implement initState
@@ -52,7 +52,10 @@ class _WordDetail extends State<WordDetail> {
 
     WordDao().select(widget.word).then((value) =>{
       if (value == null){
-          isExits = false
+        opacityLevel = 1,
+
+      }else{
+        isExits = true,
       }
     });
   }
@@ -149,16 +152,41 @@ class _WordDetail extends State<WordDetail> {
           ],
         ),
       ),
-      floatingActionButton:isExits?null: FloatingActionButton(
-        onPressed: (){
-          Word word = Word();
-          word.word = widget.word;
-          word.detail = json.encode(detail) ;
-          word.core = 0;
-          word.createTime = TimeUtils.currentTimeMillis();
-          WordDao().insert(word).then((value) => showToast("添加成功"));
-        },
-        child: Icon(Icons.add),
+      floatingActionButton: AnimatedOpacity(
+        opacity: opacityLevel,
+        duration: new Duration(milliseconds: 300),//过渡时间：1
+        child:FloatingActionButton(
+          onPressed: (){
+            if(isExits){
+              return;
+            }
+            Word word = Word();
+            if(detail["simple"]!=null){
+              word.ukspeech = detail["simple"]["word"][0]["ukspeech"];
+              word.ukphone = detail["simple"]["word"][0]["ukphone"];
+              word.usspeech = detail["simple"]["word"][0]["usspeech"];
+              word.usphone = detail["simple"]["word"][0]["usphone"];
+              word.speech = detail["simple"]["word"][0]["speech"];
+              word.phone = detail["simple"]["word"][0]["phone"];
+            }
+            if(detail["ec"]!= null &&detail["ec"]["word"]!=null) {
+              word.trans = json.encode(detail["ec"]["word"]["trs"]);
+            }
+
+            word.word = widget.word;
+            word.detail = json.encode(detail) ;
+            word.core = 0;
+            word.createTime = TimeUtils.currentTimeMillis();
+            WordDao().insert(word).then((value){
+              showToast("添加成功");
+              setState(() {
+                opacityLevel = 0;
+                isExits = true;
+              });
+            });
+          },
+          child: Icon(Icons.add),
+        ),
       ),
     );
   }
