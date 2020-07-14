@@ -18,12 +18,12 @@ class WordCard extends StatefulWidget{
 
 }
 
-class _WordCardState extends State<WordCard>{
+class _WordCardState extends State<WordCard> with TickerProviderStateMixin {
 
   List<Word> words;
   PageController controller ;
   List<bool> isShowInterpretation = [];
-
+  AnimationController animationController;
   @override
   void initState() {
     super.initState();
@@ -36,6 +36,19 @@ class _WordCardState extends State<WordCard>{
         words = value;
       })
     });
+    words = []..add(Word.fromMap({
+      'word':'word',
+      'ukspeech':'test',
+    'usspeech':'test',
+    'ukphone':'test',
+    'usphone':'test',
+
+    'trans':'[{"pos":"e","tran":"sss"}]',
+    }));
+    animationController = AnimationController(
+    vsync: this,
+    duration: Duration(microseconds: 1000),
+    );
 
   }
   @override
@@ -83,11 +96,19 @@ class _WordCardState extends State<WordCard>{
                                 Wrap(
                                   children: [
                                     words[i].ukspeech==null?Container(): Container(
+                                      margin: EdgeInsets.all(10),
+                                      padding: EdgeInsets.all(4),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                                        border: Border.all(
+                                          color: Theme.of(context).primaryColor,
+                                        )
+                                      ),
                                       child: WordAudioPlayer(
                                         "https://dict.youdao.com/dictvoice?audio="+words[i].ukspeech,
                                         color:Theme.of(context).primaryColor,
                                         child: words[i].ukphone==null?Container():Text(
-                                           "/${ words[i].ukphone}/",
+                                           "英/${ words[i].ukphone}/",
                                           style: TextStyle(
                                             color: ColorConfig.secondary_text
                                           ),
@@ -95,11 +116,19 @@ class _WordCardState extends State<WordCard>{
                                       ),
                                     ),
                                     words[i].usspeech==null?Container(): Container(
+                                      margin: EdgeInsets.all(10),
+                                      padding: EdgeInsets.all(4),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                                          border: Border.all(
+                                            color: Theme.of(context).primaryColor,
+                                          )
+                                      ),
                                       child: WordAudioPlayer(
                                         "https://dict.youdao.com/dictvoice?audio="+words[i].usspeech,
                                         color:Theme.of(context).primaryColor,
                                         child: words[i].usphone==null?Container():Text(
-                                          "/${ words[i].usphone}/",
+                                          "美/${ words[i].usphone}/",
                                           style: TextStyle(
                                               color: ColorConfig.secondary_text
                                           ),
@@ -138,7 +167,65 @@ class _WordCardState extends State<WordCard>{
                 }).toList(),
               ),
             ),
+            Container(
+              child: Row(
+                children: [
+                  RaisedButton(
+                    onPressed:(){
 
+                    },
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(30), )
+                    ),
+                    child:Container(
+                      height: 30,
+                      padding: EdgeInsets.only(left: 10),
+                      child:DropdownButton(
+                        value: 1,
+
+                        items: <DropdownMenuItem>[
+                          DropdownMenuItem(
+                            value: 1,
+                            child: Text("显示释义"),
+                          ),
+                          DropdownMenuItem(
+                            value: 2,
+                            child: Text("隐藏释义"),
+                          ),
+                          DropdownMenuItem(
+                            value: 3,
+                            child: Text("隐藏单词"),
+                          ),
+                        ],
+                        onChanged: (v){
+
+                        },
+                      ),
+                    ),
+                  ),
+                  RaisedButton(
+                    onPressed:(){
+                      animationController.forward();
+
+                    },
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(30), )
+                    ),
+                    child:Container(
+                      height: 40,
+                      padding: EdgeInsets.only(left: 10),
+                      child: AnimatedIcon(
+                        size: 30,
+                        icon: AnimatedIcons.pause_play,
+                        progress: animationController
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
