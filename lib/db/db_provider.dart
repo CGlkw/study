@@ -10,6 +10,8 @@ abstract class BaseDBProvider{
 
   tableName();
 
+  Future<void>init(Database db);
+
   tableBaseString(String name, String columnId){
     return ''' 
       create table $name (
@@ -26,7 +28,8 @@ abstract class BaseDBProvider{
     isTableExits = await DBManager.isTableExits(name);
     if(!isTableExits){
       Database db = await DBManager.getCurrentDatabase();
-      return await db.execute(createSql);
+      await db.execute(createSql);
+      await init(db);
     }
   }
 

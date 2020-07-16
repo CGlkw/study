@@ -21,12 +21,12 @@ class WordAudioPlayer extends StatefulWidget{
       }):super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _WordAudioPlayerState();
+  State<StatefulWidget> createState() => WordAudioPlayerState();
 
 }
 
 
-class _WordAudioPlayerState extends State<WordAudioPlayer>{
+class WordAudioPlayerState extends State<WordAudioPlayer>{
 
   final GlobalKey<VolumeAnimationState> _controller = new GlobalKey<VolumeAnimationState>();
   AudioPlayer _audioPlayer = AudioPlayer();

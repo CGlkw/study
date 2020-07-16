@@ -1,8 +1,10 @@
 import 'package:sqflite/sqflite.dart';
+import 'package:study/dao/book_dao.dart';
 import 'package:study/db/db_provider.dart';
 
 final String _tableName = "word";
 final String columnId = "_id";
+final String columnBookId = "bookId";
 final String columnWord = "word";
 final String columnUkspeech = "ukspeech";
 final String columnUkphone = "ukphone";
@@ -20,6 +22,7 @@ final String columnIsDel = "isDel";
 
 class Word {
   int id;
+  int bookId;
   String word;
   String ukspeech;
   String ukphone;
@@ -35,6 +38,7 @@ class Word {
 
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{
+      columnBookId: bookId,
       columnWord: word,
       columnDetail: detail,
       columnUkspeech :ukspeech,
@@ -58,6 +62,7 @@ class Word {
 
   Word.fromMap(Map<String, dynamic> map) {
     id = map[columnId];
+    bookId = map[columnBookId];
     word = map[columnWord];
     ukspeech= map[columnUkspeech];
     ukphone= map[columnUkphone ];
@@ -76,6 +81,10 @@ class Word {
 class WordDao extends BaseDBProvider{
 
   Future<Word> insert(Word word) async {
+    if(word.bookId == null){
+      Book book = await BookDao().getDefaultBook();
+      word.bookId = book.id;
+    }
     Database db = await getDataBase();
     word.id = await db.insert(_tableName, word.toMap());
     return word;
@@ -84,17 +93,26 @@ class WordDao extends BaseDBProvider{
   Future<List<Word>> list() async {
     Database db = await getDataBase();
     List<Map> maps = await db.query(_tableName,
-        columns: [columnId, columnWord,columnUkspeech, columnUkphone,columnUsspeech,columnUsphone,columnSpeech,columnPhone,columnTrans,columnDetail,columnCore,columnCreateTime,columnIsDel],
+        columns: [columnId,columnBookId, columnWord,columnUkspeech, columnUkphone,columnUsspeech,columnUsphone,columnSpeech,columnPhone,columnTrans,columnDetail,columnCore,columnCreateTime,columnIsDel],
         orderBy: "$columnCore, $columnCreateTime",
         limit: 10
     );
     return maps.map((e) => Word.fromMap(e)).toList();
   }
 
+  Future<List<Word>> selectByBookId(int bookId) async {
+    Database db = await getDataBase();
+    List<Map> maps = await db.query(_tableName,
+        columns: [columnId, columnBookId,columnWord,columnUkspeech, columnUkphone,columnUsspeech,columnUsphone,columnSpeech,columnPhone,columnTrans,columnDetail,columnCore,columnCreateTime,columnIsDel],
+        where: "$columnBookId = ?",
+        whereArgs: [bookId]);
+    return maps.map((e) => Word.fromMap(e)).toList();
+  }
+
   Future<Word> select(String word) async {
     Database db = await getDataBase();
     List<Map> maps = await db.query(_tableName,
-        columns: [columnId, columnWord,columnUkspeech, columnUkphone,columnUsspeech,columnUsphone,columnSpeech,columnPhone,columnTrans,columnDetail,columnCore,columnCreateTime,columnIsDel],
+        columns: [columnId,columnBookId, columnWord,columnUkspeech, columnUkphone,columnUsspeech,columnUsphone,columnSpeech,columnPhone,columnTrans,columnDetail,columnCore,columnCreateTime,columnIsDel],
         where: "$columnWord = ?",
         whereArgs: [word]);
     if (maps.length > 0) {
@@ -107,7 +125,7 @@ class WordDao extends BaseDBProvider{
     Database db = await getDataBase();
 
     List<Map> maps = await db.query(_tableName,
-        columns: [columnId, columnWord,columnUkspeech, columnUkphone,columnUsspeech,columnUsphone,columnSpeech,columnPhone,columnTrans,columnDetail,columnCore,columnCreateTime,columnIsDel],
+        columns: [columnId,columnBookId, columnWord,columnUkspeech, columnUkphone,columnUsspeech,columnUsphone,columnSpeech,columnPhone,columnTrans,columnDetail,columnCore,columnCreateTime,columnIsDel],
         where: "$columnId = ?",
         whereArgs: [id]);
     if (maps.length > 0) {
@@ -137,6 +155,7 @@ class WordDao extends BaseDBProvider{
   tableSqlString() {
     return tableBaseString(_tableName, columnId) +
     '''
+    $columnBookId integer,
     $columnWord text,
     $columnUkspeech text,
     $columnUkphone  text,
@@ -151,5 +170,10 @@ class WordDao extends BaseDBProvider{
     $columnIsDel integer
           )
     ''';
+  }
+
+  @override
+  Future<void> init(Database db) {
+    return null;
   }
 }
