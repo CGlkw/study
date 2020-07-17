@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:study/db/db_provider.dart';
 import 'package:study/utils/TimeUtils.dart';
@@ -5,6 +6,9 @@ import 'package:study/utils/TimeUtils.dart';
 final String _tableName = "book";
 final String columnId = "_id";
 final String columnName = "name";
+final String columnColor = "color";
+final String columnCount = "count";
+final String columnWord = "word";
 final String columnIsDefault = "isDefault";
 
 final String columnCreateTime = "createTime";
@@ -13,6 +17,9 @@ final String columnIsDel = "isDel";
 class Book {
   int id;
   String name;
+  MaterialColor color;
+  int count;
+  String word;
   bool isDefault;
   int createTime;
   bool isDel;
@@ -20,6 +27,9 @@ class Book {
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{
       columnName: name,
+      columnColor: Colors.primaries.indexOf(color),
+      columnCount:count,
+      columnWord:word,
       columnIsDefault: isDefault == true ? 1: 0,
       columnCreateTime: createTime,
       columnIsDel: isDel == true ? 1 : 0
@@ -35,6 +45,9 @@ class Book {
   Book.fromMap(Map<String, dynamic> map) {
     id = map[columnId];
     name = map[columnName];
+    color = Colors.primaries[map[columnColor]];
+    count = map[columnCount];
+    word = map[columnWord];
     isDefault= map[columnIsDefault] == 0;
     createTime = map[columnCreateTime];
     isDel = map[columnIsDel] == 1;
@@ -115,6 +128,9 @@ class BookDao extends BaseDBProvider{
     Book book = Book();
     book.isDefault = true;
     book.name = "我的生词本";
+    book.count = 0;
+    book.word = "M";
+    book.color = Colors.blue;
     book.createTime = TimeUtils.currentTimeMillis();
     await db.insert(_tableName, book.toMap());
   }

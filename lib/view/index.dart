@@ -8,6 +8,7 @@ import 'package:study/common/WordAudioPlayer.dart';
 import 'package:study/config.dart';
 import 'package:study/dao/word_dao.dart';
 import 'package:study/view/SearchPage.dart';
+import 'package:study/view/info_draver/index.dart';
 
 class Index extends StatefulWidget{
   @override
@@ -52,7 +53,7 @@ class _IndexState extends State<Index>{
           )
         ],
       ),
-      drawer: Container(),
+      drawer: MyDrawer(),
       body: words == null? Container():Container(
         child:RefreshIndicator(
           onRefresh: _onRefresh,

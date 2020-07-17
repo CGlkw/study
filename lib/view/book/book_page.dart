@@ -1,6 +1,7 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:study/common/book_card.dart';
 import 'package:study/dao/book_dao.dart';
 
 class BookPage extends StatefulWidget{
@@ -18,7 +19,26 @@ class _BookPageState extends State<BookPage>{
   void initState() {
     // TODO: implement initState
     super.initState();
-    BookDao().list().then((value) => books = value);
+    BookDao().list().then((value){
+      setState(() {
+        books = value;
+      });
+    });
+    books = []..add(Book.fromMap({
+      'name':'我的生词本',
+      'count': 12,
+      'color': 8,
+      'word':"w",
+      'isDefault':true,
+    }))..add(Book.fromMap({
+      'name':'考研词汇',
+      'count': 1212,
+      'color': 5,
+      'word':"K",
+      'isDefault':false,
+    }));
+
+
   }
 
   @override
@@ -27,11 +47,12 @@ class _BookPageState extends State<BookPage>{
       return Container(
         child: InkWell(
           onTap: () => Navigator.pushNamed(context, "/word/book/detail",arguments: books[index].id),
-          child: Center(
-            child: Card(
-              child: Text(books[index].name),
-            ),
-          ),
+          child: BookCard(
+            title: books[index].name,
+            count: books[index].count,
+            color: books[index].color,
+            word: books[index].word,
+          )
         ),
       );
     }
@@ -44,7 +65,7 @@ class _BookPageState extends State<BookPage>{
       body: books == null? Container():Container(
         child:GridView.builder(
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
+            crossAxisCount: 3,
             crossAxisSpacing: 8.0,
             mainAxisSpacing: 8.0,
             childAspectRatio: 0.618 / 1.0,

@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:study/common/book_card.dart';
 
 class MyDrawer extends StatelessWidget {
   const MyDrawer({
@@ -27,6 +28,11 @@ class MyDrawer extends StatelessWidget {
                         leading: const Icon(Icons.book),
                         title: const Text('单词本'),
                         onTap: () => Navigator.pushNamed(context, "/word/book"),
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.book),
+                        title: const Text('card'),
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => BookCard())),
                       ),
                     ],
                   ),
