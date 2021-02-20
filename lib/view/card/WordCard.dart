@@ -8,6 +8,7 @@ import 'package:oktoast/oktoast.dart';
 import 'package:study/common/WordAudioPlayer.dart';
 import 'package:study/config.dart';
 import 'package:study/dao/word_dao.dart';
+import 'package:study/view/card/card_item.dart';
 
 class WordCard extends StatefulWidget{
 
@@ -38,7 +39,6 @@ class _WordCardState extends State<WordCard> with TickerProviderStateMixin {
   void initState() {
     super.initState();
 
-
     try{
       WordDao().list().then((value) => {
         setState(() {
@@ -50,22 +50,6 @@ class _WordCardState extends State<WordCard> with TickerProviderStateMixin {
 
     }
 
-    words = []..add(Word.fromMap({
-    'word':'word',
-    'ukspeech':'test',
-    'usspeech':'test',
-    'ukphone':'test',
-    'usphone':'test',
-    'trans':'[{"pos":"e","tran":"sss"}]',
-    }))..add(Word.fromMap({
-    'word':'111',
-    'ukspeech':'111',
-    'usspeech':'111',
-    'ukphone':'111',
-    'usphone':'111',
-
-    'trans':'[{"pos":"e","tran":"sss"}]',
-    }));
     length = words.length;
 
     _curIndex = (widget.index ?? 0) + length * 2;
@@ -74,7 +58,7 @@ class _WordCardState extends State<WordCard> with TickerProviderStateMixin {
       initialPage: _curIndex,
     );
     if(isAutoNext){
-      _timer = _initTimer();
+      _initTimer();
     }
 
     animationController = AnimationController(
@@ -139,7 +123,7 @@ class _WordCardState extends State<WordCard> with TickerProviderStateMixin {
                   }
                 },
                 itemBuilder: (c, i){
-                  return _buildPageItem(c,words[i % length],i);
+                  return _buildItem(c,words[i % length],i);
                 },
               ),
             ),
@@ -297,143 +281,15 @@ class _WordCardState extends State<WordCard> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildInterpretation(trans){
-    return Container(
-      padding: EdgeInsets.all(20),
-      child:trans!= null?Table(
-        columnWidths:{
-          0: FixedColumnWidth(50.0),
-        },
-        children: trans.map<TableRow>((e) => TableRow(
-            children: [
-              Text(
-                e["pos"],
-                style: TextStyle(
-                  fontStyle: FontStyle.italic,
-                  color: ColorConfig.regular_text,
-                  fontSize: 20,
-                  height: 1.5,
-                  //letterSpacing: 1.2
-                ),
-              ),
-              Text(e["tran"],
-                style: TextStyle(
-                  color: ColorConfig.regular_text,
-                  fontSize: 20,
-                  height: 1.5,
-                  //letterSpacing: 1.2
-                ),
-              ),
-            ]
-        )).toList(),
-      ):Container()
+  Widget _buildItem(context, Word data, index){
+    final GlobalKey<WordAudioPlayerState> _controller = new GlobalKey<WordAudioPlayerState>();
+    audioPlayerControllerMap.putIfAbsent(index, () => _controller);
+    return CardItem(
+      isShowInterpretation: false,
+      controller: _controller,
+      data: data,
+      index: index,
     );
-
-  }
-
-  Widget _buildPageItem(context, Word data, index){
-
-      List trans ;
-      if(data.trans != null){
-        trans = json.decode(data.trans) as List;
-      }
-      isShowInterpretation.putIfAbsent(index, ()=> false);
-      final GlobalKey<WordAudioPlayerState> _controller = new GlobalKey<WordAudioPlayerState>();
-
-      audioPlayerControllerMap.putIfAbsent(index, () => _controller);
-      return Container(
-        margin: EdgeInsets.only(top: 20,bottom: 30,left: 5,right: 5),
-        child:Column(
-          children: [
-            Expanded(
-              child:Card(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                elevation: 20,
-                child: Column(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.only(top: 50,bottom: 20),
-                      child: Text(
-                        data.word,
-                        style: TextStyle(
-                            color: ColorConfig.primary_text,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 60
-                        ),
-                      ),
-                    ),
-                    Wrap(
-                      children: [
-                        data.ukspeech==null?Container(): Container(
-                          margin: EdgeInsets.all(10),
-                          padding: EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(20)),
-                              border: Border.all(
-                                color: Colors.blueAccent,
-                              )
-                          ),
-                          child: WordAudioPlayer(
-                            "https://dict.youdao.com/dictvoice?audio="+data.ukspeech,
-                            key: _controller,
-                            color:Colors.blueAccent,
-                            child: data.ukphone==null?Container():Text(
-                              "英/${ data.ukphone}/",
-                              style: TextStyle(
-                                color: ColorConfig.secondary_text
-                              ),
-                            ),
-                          ),
-                        ),
-                        data.usspeech==null?Container(): Container(
-                          margin: EdgeInsets.all(10),
-                          padding: EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(20)),
-                              border: Border.all(
-                                color: Colors.blueAccent,
-                              )
-                          ),
-                          child: WordAudioPlayer(
-                            "https://dict.youdao.com/dictvoice?audio="+data.usspeech,
-                            color:Colors.blueAccent,
-                            child: data.usphone==null?Container():Text(
-                              "美/${ data.usphone}/",
-                              style: TextStyle(
-                                  color: ColorConfig.secondary_text
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Divider(
-                      indent:40,
-                      endIndent: 40,
-                      height: 0.5,
-                      color: Colors.grey,
-                    ),
-                    Expanded(
-                      child: InkWell(
-                        onTap:() {
-                          setState(() {
-                            isShowInterpretation[index] = !isShowInterpretation[index];
-                          });
-                        },
-                        child:Center(
-                          child:isShowInterpretation[index] ? _buildInterpretation(trans):Center(
-                            child: Text("点击查看释义"),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
   }
 
 }
